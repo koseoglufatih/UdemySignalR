@@ -8,7 +8,7 @@ namespace UdemySignalR.Web.Hubs
             // bu method client tarafından tetiklenecek. index javascprit tarafından method tetiklenince başka bir methodu tetikleyecek.
             //client methodları çağıranlar.
         {
-            await Clients.
+            await Clients.All.SendAsync("ReceiveMessageForAllClient",message);
 
         }
 
