@@ -10,7 +10,27 @@ namespace UdemySignalR.Web.Hubs
         public async Task BroadcastMessageToAllClient(string message)      
         {
             await Clients.All.ReceiveMessageForAllClient(message);
+        }   //hepsine yayın yapıyor
+
+
+        public async Task BroadcastMessageToCallerClient(string message)
+        {
+            await Clients.Caller.ReceiveMessageForCallerClient(message);
+        }        //kendisi dahil herkese yayın yapıyor
+
+        public async Task BroadcastMessageToOtherClient(string message)
+        {
+            await Clients.Others.ReceiveMessageForOthersClient(message);
+        }          //kendisi hariç herkese yayın yapıyor
+
+        public async Task BroadcastMessageToIndividualClient(string connectionId,string message)
+        {
+            await Clients.Client(connectionId).ReceiveMessageForIndividualClient(message);
         }
+
+
+        
+
 
         public override async Task OnConnectedAsync()
         {
@@ -20,6 +40,8 @@ namespace UdemySignalR.Web.Hubs
             await base.OnConnectedAsync();
            
         }
+
+
 
         public override async  Task OnDisconnectedAsync(Exception? exception)
         {
