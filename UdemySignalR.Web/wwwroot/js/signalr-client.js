@@ -50,6 +50,11 @@ $(document).ready(function () {
         console.log("(Others) Gelen Mesaj", message);
     })
 
+    connection.on(receiveMessageForIndividualClient, (message) => {
+
+        console.log("(Individual) Gelen Mesaj", message);
+    })
+
 
 
     const span_client_count = $("#span - connected - client - count");
@@ -78,6 +83,7 @@ $(document).ready(function () {
 
         const message = "hello world";
         connection.invoke(broadcastMessageToAllClientHubMethodCall, message).catch(err => console.error("hata", err))
+        console.log("Mesaj gönderildi");
 
     })
 
@@ -85,17 +91,26 @@ $(document).ready(function () {
 
         const message = "hello world";
         connection.invoke(broadcastMessageToCallerClient, message).catch(err => console.error("hata", err))
+        console.log("Mesaj gönderildi");
 
     })
     $("#btn-send-message-others-client").click(function () {
 
         const message = "hello world";
         connection.invoke(broadcastMessageToOtherClient, message).catch(err => console.error("hata", err))
+        console.log("Mesaj gönderildi");
 
     })
 
     $("#btn-send-message-individual-client").click(function ()
     {
+
+        const message = "hello world";
+        const connectionId = $("#text-connectionId").val();
+        connection.invoke(broadcastMessageToIndividualClient, connectionId, message).catch(err => console.error("hata", err))
+        console.log("Mesaj gönderildi");
+
+
 
     })
 

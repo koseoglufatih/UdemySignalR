@@ -8,6 +8,7 @@
 
         Task ReceiveMessageForOthersClient(string message);
         Task ReceiveMessageForIndividualClient(string message);
+        Task ReceiveMessageForGroupClients(string message);
 
 
     }
