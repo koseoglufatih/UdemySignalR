@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using UdemySignalR.Web.Models;
 
 namespace UdemySignalR.Web.Hubs
 {
@@ -11,6 +12,13 @@ namespace UdemySignalR.Web.Hubs
         {
             await Clients.All.ReceiveMessageForAllClient(message);
         }   //hepsine yayın yapıyor
+
+        public async Task BroadcastTypedMessageToAllClient(Product product)
+        {
+            await Clients.All.ReceiveTypedMessageForAllClient(product);
+        }
+
+
         public async Task BroadcastMessageToCallerClient(string message)
         {
             await Clients.Caller.ReceiveMessageForCallerClient(message);
@@ -23,6 +31,23 @@ namespace UdemySignalR.Web.Hubs
         {
             await Clients.Client(connectionId).ReceiveMessageForIndividualClient(message);
         } // id si belirlenen client e yayın yapacak spesifik
+
+        public async Task BroadcastStreamDataToAllClient(IAsyncEnumerable<string> nameAsChunks)
+        {
+           
+            await foreach (var names in nameAsChunks)
+            {
+                await Task.Delay(1000);
+                await Clients.All.ReceiveMessageAsStreamForAllClient(names);
+            }
+                
+
+        }
+
+
+
+
+
 
 
         public async Task BroadcastMessageToGroupClients(string groupName, string message)
@@ -50,10 +75,6 @@ namespace UdemySignalR.Web.Hubs
 
 
 
-
-
-
-
         public override async Task OnConnectedAsync()
         {
             ConnectedClientCount++;
@@ -68,7 +89,8 @@ namespace UdemySignalR.Web.Hubs
 
             await Clients.All.ReceiveConnectedClientCountAllClient(ConnectedClientCount);
             await base.OnDisconnectedAsync(exception);
-
         }
+
+        
     }
 }

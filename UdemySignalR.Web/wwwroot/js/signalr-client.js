@@ -15,12 +15,35 @@ $(document).ready(function () {
     const broadcastMessageToIndividualClient = "BroadcastMessageToIndividualClient";
     const receiveMessageForIndividualClient = "ReceiveMessageForIndividualClient";
 
-
     const receiveConnectedClientCountAllClient = "ReceiveConnectedClientCountAllClient";
+
+    const receiveTypedMessageForAllClient = "ReceiveTypedMessageForAllClient";
+    const broadcastTypedMessageToAllClient = "BroadcastTypedMessageToAllClient";
 
     const groupA = "GroupA";
     const groupB = "GroupB";
     let currentGroupList = [];                          //rastgele basarsa bu grouba dahil olacak
+
+
+
+    async function start() {
+
+        try {
+            await connection.start().then(() => {
+                console.log("Hub ile baglanti kuruldu.");
+                $("#connectionId").html(`Connection Id : ${connection.connectionId}`);
+            });
+        }
+        catch (err) {
+            console.error("hub ile baðlantý kurulamadý", err);
+            setTimeout(() => start(), 5000)
+        }
+
+    }
+
+    connection.onclose(async () => {
+        await start();
+    })
 
     function refreshGroupList() {
         $("#groupList").empty();
@@ -102,27 +125,19 @@ $(document).ready(function () {
 
 
 
-        function start() {
-            connection.start().then(() => {
-                console.log("Hub ile baglanti kuruldu.");
-                $("#connectionId").html(`Connection Id : ${connection.connectionId}`);
-            });
-        }
-
-        try {
-            start();
-        }
-        catch
-        {
-            setTimeout(() => start(), 5000)
-        }
-
 
         //subscribe
         connection.on(receiveMessageForAllClientMethodCall, (message) => {
 
             console.log("Gelen Mesaj", message);
         })
+
+        connection.on(receiveTypedMessageForAllClient, (product) => {
+
+            console.log("Gelen Ürün", product);
+        })
+
+
 
         connection.on(receiveMessageForCallerClient, (message) => {
 
@@ -162,6 +177,8 @@ $(document).ready(function () {
 
 
 
+
+
         $("#btn-send-message-all-client").click(function () {
 
             const message = "hello world";
@@ -178,7 +195,8 @@ $(document).ready(function () {
 
         })
 
-        $("#btn-send-message-others-client").click(function () {
+        $("#btn-send-message-others-client").click(function ()
+        {
 
             const message = "hello world";
             connection.invoke(broadcastMessageToOtherClient, message).catch(err => console.error("hata", err))
@@ -193,6 +211,17 @@ $(document).ready(function () {
             connection.invoke(broadcastMessageToIndividualClient, connectionId, message).catch(err => console.error("hata", err))
             console.log("Mesaj gönderildi");
 
+
+
+        })
+
+
+        $("#btn-send-typed-message-all-client").click(function ()
+        {
+
+            const product = { id: 1, name: "pen 1", price: 200 };
+            connection.invoke(broadcastTypedMessageToAllClient,product).catch(err => console.error("hata", err))
+            console.log("Ürün gönderildi");
 
 
         })
