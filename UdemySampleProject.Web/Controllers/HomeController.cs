@@ -1,12 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using UdemySampleProject.Web.Models;
 using UdemySampleProject.Web.Models.ViewModels;
+using UdemySampleProject.Web.Services;
 
 namespace UdemySampleProject.Web.Controllers
 {
-    public class HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) : Controller
+    public class HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,AppDbContext context, FileService fileService) : Controller
     {
         public IActionResult Index()
         {
@@ -75,10 +77,51 @@ namespace UdemySampleProject.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Productlist()
+        public async Task<IActionResult> Productlist()
         {
-            return View();
+
+            var user = await userManager.FindByEmailAsync("testdeneme@gmail.com");
+
+            if(context.Products.Any(x=>x.UserId==user!.Id))
+             {
+                var products = context.Products.Where(x=>x.UserId==user!.Id).ToList();
+                return View(products);
+            };
+
+            var productList = new List<Product>()
+            {
+                new Product() { Name = "pen 1", Description = "description 1", Price = 100, UserId = user!.Id },
+                new Product() { Name = "pen 2", Description = "description 2", Price = 200, UserId = user!.Id },
+                new Product() { Name = "pen 3", Description = "description 3", Price = 300, UserId = user!.Id },
+                new Product() { Name = "pen 4", Description = "description 4", Price = 400, UserId = user!.Id },
+                new Product() { Name = "pen 5", Description = "description 5", Price = 500, UserId = user!.Id }
+            };
+
+            context.Products.AddRange(productList);
+            await context.SaveChangesAsync();
+
+            return View(productList);
         }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> CreateExcel()
+        {
+            var response = new
+            {
+                Status = await fileService.AddMessageToQueue()
+
+            };
+
+            return Json(response);
+        }
+
+
+
+
+
+
+
 
 
 
