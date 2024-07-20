@@ -1,20 +1,24 @@
-using UdemySignalR.Web.Hubs;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using UdemySampleProject.Web.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSignalR();
 
-builder.Services.AddCors(action =>
+
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    action.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("https://localhost:7002").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-
-    });
-
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
 });
+
+builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+
+
+
+
+
 
 
 var app = builder.Build();
@@ -29,9 +33,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseCors();
-app.MapHub<ExampleHub>("/examplehub");
-app.MapHub<ExampleTypeSafeHub>("/exampleTypeSafeHub");
 
 app.UseRouting();
 

@@ -45,6 +45,33 @@ namespace UdemySignalR.Web.Hubs
         }
 
 
+        public async Task BroadcastStreamProductToAllClient(IAsyncEnumerable<Product> productAsChunks)
+        {
+
+            await foreach (var product in productAsChunks)
+            {
+                await Task.Delay(1000);
+                await Clients.All.ReceiveProductAsStreamForAllClient(product);
+
+
+                //chunk gönderiyoruz geriye chunk geliyor
+            }
+
+        }
+
+        public async IAsyncEnumerable<string> BroadCastFromHubToClient(int count)
+        {
+
+            foreach (var item in Enumerable.Range(1, count).ToList())
+            {
+                await Task.Delay(1000);
+                yield return $"{item}.data";          //yield keywordu  araştır ? datayı alır almaz dönmek istiyorsak o anki datayı dönüyoruz.
+                //gelen datayı geriye chunk döndürmek için
+            }
+
+        }
+
+
 
 
 
