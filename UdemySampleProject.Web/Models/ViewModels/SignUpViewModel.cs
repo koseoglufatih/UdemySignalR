@@ -1,6 +1,8 @@
-﻿namespace UdemySampleProject.Web.Models.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace UdemySampleProject.Web.Models.ViewModels
 {
-    public record SignUpViewModel(string Email,string Password,string ConfirmPassword);
+    public record SignUpViewModel([Required] string Email, [Required] string Password, [Required] string ConfirmPassword);
 
     //record öğren yanyana tanımlanıyor... (yeni özellikler)
     
