@@ -38,7 +38,7 @@ namespace CovidChartAPI.Controllers
             {
                 foreach (ECity item in Enum.GetValues(typeof(ECity)))
                 {
-                    var newcovid = new Covid { City = item, Count = rnd.Next(100, 1000), CovidDate = DateTime.Now.AddDays(2) };
+                    var newcovid = new Covid { City = item, Count = rnd.Next(100, 1000), CovidDate = DateTime.Now.AddDays(x) };
                      _covidService.SaveCovid(newcovid).Wait(); 
                     System.Threading.Thread.Sleep(1000);
                 }
