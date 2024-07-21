@@ -1,13 +1,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using System.Threading.Channels;
+using UdemySampleProject.Web.BackgroundServices;
+using UdemySampleProject.Web.Hubs;
 using UdemySampleProject.Web.Models;
 using UdemySampleProject.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
+
 builder.Services.AddScoped<FileService>();
 
 
@@ -30,6 +36,9 @@ builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStor
 
 
 
+builder.Services.AddHostedService<CreateExcelBackgroundService>();
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +51,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.MapHub<AppHub>("/hub");
+
 
 app.UseRouting();
 

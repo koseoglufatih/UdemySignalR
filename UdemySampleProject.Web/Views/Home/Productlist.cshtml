@@ -1,7 +1,69 @@
-﻿@{
+﻿
+
+@{
     ViewData["Title"] = "Productlist";
 }
+@section Scripts
+{
+    <script>
+
+        $(document).ready(function () {
+
+            $("btn-create-excel").click(function () {
+
+                $.ajax({
+
+                        url:"/Home/CreateExcel",
+                        type:"GET",
+                        dataType:"json",
+                    success: function (data) { 
+
+                        $(".toast-body").html("Excel oluşturma isteği alınmıştır. Tamamlandığında bilgilendirileceksiniz..");
+
+                        $("#liveToast").show();
+
+                        toastTimeout = setTimeout(() => {
+
+                            $("#liveToast").hide();
+
+                        },3000)
+
+
+
+                    },
+                    error: function (err) {
+                       alert("Excel dosyasını indirebilmek için üye olunuz.!")
+                    }
+
+
+                  })
+                
+                    
+            })
+
+        });
+
+    </script>
+    
+
+
+
+
+}
+
+
+
 @model List<Product>
+
+
+    <p>
+        <a class="btn btn-primary"href="#" id="btn-create-excel">Create Excel</a>
+    </p>
+
+
+
+
+
 <table class="table">
     <thead>
     <tr>

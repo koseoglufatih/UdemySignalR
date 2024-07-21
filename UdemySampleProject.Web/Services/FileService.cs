@@ -5,7 +5,7 @@ using UdemySampleProject.Web.Models;
 
 namespace UdemySampleProject.Web.Services
 {
-    public class FileService(AppDbContext context,HttpContextAccessor httpContextAccessor ,UserManager<IdentityUser> userManager,Channel<(string userId,List<Product>products)> channel)
+    public class FileService(AppDbContext context,IHttpContextAccessor httpContextAccessor ,UserManager<IdentityUser> userManager,Channel<(string userId,List<Product>products)> channel)
     {
 
     public async  Task<bool> AddMessageToQueue()
